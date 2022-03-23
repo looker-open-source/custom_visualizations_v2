@@ -16,6 +16,14 @@ export interface LookerChartUtils {
     htmlForCell: (cell: Cell, context?: string, fieldDefinitionForCell?: any, customHtml?: string) => string
   }
 }
+/**
+ * Minimal representation of a Crossfilter action
+ */
+export interface Crossfilter {
+  field: string
+  values: string[]
+  range?: [string, string]
+}
 
 // Looker visualization types
 export interface VisualizationDefinition {
@@ -25,6 +33,7 @@ export interface VisualizationDefinition {
   addError?: (error: VisualizationError) => void
   clearErrors?: (errorName?: string) => void
   create: (element: HTMLElement, settings: VisConfig) => void
+  onCrossfilter: (crossfilters: Crossfilter[], event: Event | null) => void,
   trigger?: (event: string, config: object[]) => void
   update?: (data: VisData, element: HTMLElement, config: VisConfig, queryResponse: VisQueryResponse, details?: VisUpdateDetails) => void
   updateAsync?: (data: VisData, element: HTMLElement, config: VisConfig, queryResponse: VisQueryResponse, details: VisUpdateDetails | undefined, updateComplete: () => void) => void
