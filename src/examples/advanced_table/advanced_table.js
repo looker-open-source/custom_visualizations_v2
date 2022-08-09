@@ -6,7 +6,7 @@ import PivotHeader from './pivotHeader.js';
 
 // Dependencies:
 // The following dependencies are required in order to run this custom visualization.
-// Ag-grid: https://unpkg.com/ag-grid-enterprise/dist/ag-grid-enterprise.min.noStyle.js×
+// Ag-grid: https://unpkg.com/ag-grid-enterprise@20.1.0/dist/ag-grid-enterprise.min.noStyle.js
 // Lodash: https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.11/lodash.core.min.js
 // Numeral: https://cdnjs.cloudflare.com/ajax/libs/numeral.js/2.0.6/numeral.min.js
 // Chroma: https://cdnjs.cloudflare.com/ajax/libs/chroma-js/1.4.0/chroma.min.js
