@@ -20,7 +20,7 @@
   "devDependencies": {
     "@types/jquery": "^3.3.31",
     "css-loader": "^0.28.11",
-    "d3": "^4.8.0",
+    "d3": "^7.8.5",
     "jquery": "^3.3.1",
     "jsdom": "^11.11.0",
     "pivottable": "^2.20.0",
@@ -47,6 +47,6 @@
     "react-dom": "^16.7.0",
     "react-responsive-carousel": "^3.1.51",
     "ssf": "^0.11.2",
-    "typescript": "^3.3.3333"
+    "typescript": "^5.3.3"
   }
 }

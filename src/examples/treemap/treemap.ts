@@ -11,7 +11,7 @@ import {
 declare var looker: Looker
 
 interface TreemapVisualization extends VisualizationDefinition {
-  svg?: d3.Selection<SVGElement, {}, any, any>,
+  svg?: d3.Selection<SVGSVGElement, any, null, undefined>,
 }
 
 // recursively create children array
@@ -157,14 +157,14 @@ const vis: TreemapVisualization = {
       .attr('id', (d, i) => 'rect-' + i)
       .attr('width', (d: any) => d.x1 - d.x0)
       .attr('height', (d: any) => d.y1 - d.y0)
-      .style('fill', (d) => {
+      .style('fill', (d: any) => {
         if (d.depth === 0) return 'none'
-        const ancestor: string = d.ancestors().map((p) => p.data.name).slice(-2, -1)[0]
+        const ancestor: string = d.ancestors().map((p: any) => p.data.name).slice(-2, -1)[0]
         const colors: any[] = [color(ancestor), '#ddd']
         const scale = d3.scaleLinear()
           .domain([1, 6.5])
           .range(colors)
-        return scale(d.depth)
+        return scale(d.depth) ?? null;
       })
 
     cell.append('clipPath')
