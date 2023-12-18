@@ -11,7 +11,7 @@ import {
 } from '../types/types'
 
 interface CollapsibleTreeVisualization extends VisualizationDefinition {
-  svg?: d3.Selection<d3.BaseType, {}, null, undefined>,
+  svg?: d3.Selection<SVGSVGElement, any, null, undefined>,
 }
 
 // recursively create children array
@@ -79,7 +79,7 @@ const vis: CollapsibleTreeVisualization = {
 
   // Set up the initial state of the visualization
   create(element, config) {
-    this.svg = d3.select(element).append('svg')
+    this.svg = d3.select(element).append('svg');
   },
 
   // Render in response to the data or settings changing
@@ -170,11 +170,7 @@ const vis: CollapsibleTreeVisualization = {
       // ****************** Nodes section ***************************
 
       // Update the nodes...
-      const node = (
-        svg
-          .selectAll('g.node')
-          .data(nodes, (d: any) => d.id || (d.id = ++i))
-      )
+      const node: any = svg.selectAll('g.node').data(nodes, (d: any) => d.id || (d.id = ++i));
 
       // Enter any new modes at the parent's previous position.
       const nodeEnter = (
@@ -182,7 +178,7 @@ const vis: CollapsibleTreeVisualization = {
           .enter()
           .append('g')
           .attr('class', 'node')
-          .attr('transform', (d) => {
+          .attr('transform', () => {
             return 'translate(' + source.y0 + ',' + source.x0 + ')'
           })
           .on('click', click)
@@ -212,7 +208,7 @@ const vis: CollapsibleTreeVisualization = {
       // Transition to the proper position for the node
       nodeUpdate.transition()
         .duration(duration)
-        .attr('transform', (d) => {
+        .attr('transform', (d: any) => {
           return 'translate(' + d.y + ',' + d.x + ')'
         })
 
@@ -227,7 +223,7 @@ const vis: CollapsibleTreeVisualization = {
       // Remove any exiting nodes
       const nodeExit = node.exit().transition()
         .duration(duration)
-        .attr('transform', (d) => {
+        .attr('transform', () => {
           return 'translate(' + source.y + ',' + source.x + ')'
         })
         .remove()
@@ -243,7 +239,7 @@ const vis: CollapsibleTreeVisualization = {
       // ****************** links section ***************************
 
       // Update the links...
-      const link = (
+      const link: any = (
         svg
           .selectAll('path.link')
           .data(links, (d: any) => d.id)
@@ -258,7 +254,7 @@ const vis: CollapsibleTreeVisualization = {
           .style('fill', 'none')
           .style('stroke', '#ddd')
           .style('stroke-width', 1.5)
-          .attr('d', (d) => {
+          .attr('d', () => {
             const o = { x: source.x0, y: source.y0 }
             return diagonal(o, o)
           })
@@ -271,14 +267,14 @@ const vis: CollapsibleTreeVisualization = {
       linkUpdate
         .transition()
         .duration(duration)
-        .attr('d', (d) => diagonal(d, d.parent))
+        .attr('d', (d: any) => diagonal(d, d.parent))
 
       // Remove any exiting links
       link
         .exit()
         .transition()
         .duration(duration)
-        .attr('d', (d) => {
+        .attr('d', () => {
           const o = { x: source.x, y: source.y }
           return diagonal(o, o)
         })
