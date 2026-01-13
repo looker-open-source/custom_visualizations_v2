@@ -488,6 +488,16 @@ this.trigger("limit", [20]);
 
 	Mark the visualization as no longer loading.
 
+- `printSize` (Looker 26.0+)
+
+	Allows visualizations to take advantage of the "Expand tables to show all rows" option when rendering dashboards to PDF. Using this event allows the application to know how tall the rendered content is and can expand the dashboard tile appropriately so all the information is visible for printing.
+
+	```js
+	  this.trigger('printSize', {
+	    heightExpanded: FULL_HEIGHT_IN_PIXELS
+	  });
+	```
+
 - `registerOptions` (Looker 5.24+)
 
 	Allows visualizations to register additional options after the visualization has been registered:
