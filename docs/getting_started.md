@@ -158,6 +158,8 @@ We can just modify the beginning of our `updateAsync` method to detect an error 
       done();
       return;
     }
+
+    // ... the rest of the update code here ...
 ```
 
 That's it! If the user creates a query that only has measures, they'll now see this:
