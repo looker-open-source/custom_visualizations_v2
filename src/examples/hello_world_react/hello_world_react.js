@@ -66,6 +66,7 @@ looker.plugins.visualizations.add({
     // Throw some errors and exit if the shape of the data isn't what this chart needs
     if (queryResponse.fields.dimensions.length == 0) {
       this.addError({title: "No Dimensions", message: "This chart requires dimensions."});
+      done();
       return;
     }
 
@@ -83,10 +84,9 @@ looker.plugins.visualizations.add({
     // Finally update the state with our new data
     this.chart = ReactDOM.render(
       <Hello data={firstCell}/>,
-      this._textElement
+      this._textElement,
+      done
     );
 
-    // We are done rendering! Let Looker know.
-    done()
   }
 });
