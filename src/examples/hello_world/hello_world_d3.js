@@ -4,36 +4,49 @@ looker.plugins.visualizations.add({
     font_size: {
       type: "string",
       label: "Font Size",
-      values: [
-        {"Large": "large"},
-        {"Small": "small"}
-      ],
+      values: [{ Large: "large" }, { Small: "small" }],
       display: "radio",
-      default: "large"
-    }
+      default: "large",
+    },
   },
 
-  create: function(element, config) {
+  create: function (element, config) {
     // Clear Looker's default element container
     element.innerHTML = "";
 
     // Set up our persistent D3 SVG canvas
-    this.svg = d3.select(element).append("svg")
+    this.svg = d3
+      .select(element)
+      .append("svg")
       .attr("width", "100%")
       .attr("height", "100%");
   },
 
-  updateAsync: function(data, element, config, queryResponse, details, done) {
+  updateAsync: function (data, element, config, queryResponse, details, done) {
     // Clear any previous Looker errors
     this.clearErrors();
 
-    if (queryResponse.fields.dimensions.length === 0 || queryResponse.fields.measures.length === 0) {
-      this.addError({title: "Missing Data", message: "This chart requires at least one dimension and one measure."});
+    if (
+      queryResponse.fields.dimensions.length === 0 ||
+      queryResponse.fields.measures.length === 0
+    ) {
+      this.addError({
+        title: "Missing Data",
+        message: "This chart requires at least one dimension and one measure.",
+      });
       done(); // Call done() before early return
       return;
     }
 
-    // --- Setup ---
+    if (!data || data.length === 0) {
+      this.addError({
+        title: "No Data",
+        message: "The query returned no results.",
+      });
+      done();
+      return;
+    }
+
     // Check if this is a headless browser export (PDF/PNG)
     const isExport = details && details.print === true;
 
@@ -49,9 +62,13 @@ looker.plugins.visualizations.add({
     const measureValue = firstRow[measureName].value;
 
     // Create a circle in the center of the screen
-    const targetRadius = Math.min(measureValue, Math.min(width, height) / 2 - 10);
-    
-    const circle = this.svg.append("circle")
+    const targetRadius = Math.max(
+      0,
+      Math.min(measureValue || 0, Math.min(width, height) / 2 - 10),
+    );
+
+    const circle = this.svg
+      .append("circle")
       .attr("cx", width / 2)
       .attr("cy", height / 2)
       .attr("fill", config.font_size === "small" ? "#88C8F3" : "#008CD4"); // Using config just as a demo
@@ -61,20 +78,21 @@ looker.plugins.visualizations.add({
       // INSTANT RENDER FOR PDF EXPORTS
       // Draw the final state immediately with no transitions.
       circle.attr("r", targetRadius);
-      
+
       // Tell Looker to take the screenshot right now.
-      done(); 
+      done();
     } else {
       // ANIMATED RENDER FOR BROWSER
       // Start with a radius of 0 and transition to the target radius
-      circle.attr("r", 0)
+      circle
+        .attr("r", 0)
         .transition()
         .duration(1000) // 1 second animation
         .attr("r", targetRadius)
         .on("end", () => {
-           // Tell Looker the animation is finished
-           done(); 
+          // Tell Looker the animation is finished
+          done();
         });
     }
-  }
+  },
 });

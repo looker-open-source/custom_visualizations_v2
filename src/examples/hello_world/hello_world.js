@@ -60,6 +60,12 @@ looker.plugins.visualizations.add({
       return;
     }
 
+    if (!data || data.length === 0) {
+      this.addError({title: "No Data", message: "The query returned no results."});
+      done();
+      return;
+    }
+
     // Grab the first cell of the data
     var firstRow = data[0];
     var firstCell = firstRow[queryResponse.fields.dimensions[0].name];

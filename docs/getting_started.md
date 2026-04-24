@@ -159,6 +159,12 @@ We can just modify the beginning of our `updateAsync` method to detect an error 
       return;
     }
 
+    if (!data || data.length === 0) {
+      this.addError({title: "No Data", message: "The query returned no results."});
+      done();
+      return;
+    }
+
     // ... the rest of the update code here ...
 ```
 
