@@ -64,7 +64,7 @@ looker.plugins.visualizations.add({
     // Create a circle in the center of the screen
     const targetRadius = Math.max(
       0,
-      Math.min(measureValue || 0, Math.min(width, height) / 2 - 10),
+      Math.min(measureValue, Math.min(width, height) / 2 - 10),
     );
 
     const circle = this.svg
