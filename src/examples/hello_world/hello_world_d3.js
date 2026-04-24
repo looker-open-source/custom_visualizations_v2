@@ -59,7 +59,7 @@ looker.plugins.visualizations.add({
     // Grab the first measure value to determine the size of our visualization
     const firstRow = data[0];
     const measureName = queryResponse.fields.measures[0].name;
-    const measureValue = firstRow[measureName].value;
+    const measureValue = firstRow[measureName].value ? firstRow[measureName].value : 0;
 
     // Create a circle in the center of the screen
     const targetRadius = Math.max(
