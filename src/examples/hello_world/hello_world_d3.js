@@ -73,7 +73,6 @@ looker.plugins.visualizations.add({
       .attr("cy", height / 2)
       .attr("fill", config.font_size === "small" ? "#88C8F3" : "#008CD4"); // Using config just as a demo
 
-    // --- The `done()` Callback Logic ---
     if (isExport) {
       // INSTANT RENDER FOR PDF EXPORTS
       // Draw the final state immediately with no transitions.
