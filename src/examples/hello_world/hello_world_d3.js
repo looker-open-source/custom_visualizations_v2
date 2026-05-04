@@ -25,6 +25,14 @@ looker.plugins.visualizations.add({
   updateAsync: function (data, element, config, queryResponse, details, done) {
     // Clear any previous Looker errors
     this.clearErrors();
+    if (!data || data.length === 0) {
+      this.addError({
+        title: "No Data",
+        message: "The query returned no results.",
+      });
+      done();
+      return;
+    }
 
     if (
       queryResponse.fields.dimensions.length === 0 ||
@@ -35,15 +43,6 @@ looker.plugins.visualizations.add({
         message: "This chart requires at least one dimension and one measure.",
       });
       done(); // Call done() before early return
-      return;
-    }
-
-    if (!data || data.length === 0) {
-      this.addError({
-        title: "No Data",
-        message: "The query returned no results.",
-      });
-      done();
       return;
     }
 
@@ -59,7 +58,7 @@ looker.plugins.visualizations.add({
     // Grab the first measure value to determine the size of our visualization
     const firstRow = data[0];
     const measureName = queryResponse.fields.measures[0].name;
-    const measureValue = firstRow[measureName]?.value || 0;
+    const measureValue = Number(firstRow[measureName]?.value) || 0;
 
     // Create a circle in the center of the screen
     const targetRadius = Math.max(
