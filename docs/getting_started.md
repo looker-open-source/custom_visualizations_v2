@@ -154,6 +154,14 @@ We can just modify the beginning of our `updateAsync` method to detect an error 
     // Throw some errors and exit if the shape of the data isn't what this chart needs.
     if (queryResponse.fields.dimensions.length == 0) {
       this.addError({title: "No Dimensions", message: "This chart requires dimensions."});
+      // Always call done() before exiting early to avoid dashboard exports hanging
+      done();
+      return;
+    }
+
+    if (!data || data.length === 0) {
+      this.addError({title: "No Data", message: "The query returned no results."});
+      done();
       return;
     }
 
@@ -163,6 +171,62 @@ We can just modify the beginning of our `updateAsync` method to detect an error 
 That's it! If the user creates a query that only has measures, they'll now see this:
 
 ![](../src/examples/hello_world/hello_world_error.png)
+
+
+### Asynchronous Rendering & PDF Exports
+
+In the "Hello World" example above, we called `done()` immediately after updating the DOM. This is perfectly safe because setting `innerHTML` is **synchronous**. 
+
+However, if you are using charting libraries like D3.js, Chart.js, or React, your rendering is likely **asynchronous**. If you call `done()` at the bottom of your script, Looker might capture the screenshot for a PDF or PNG export *before* your chart finishes drawing, resulting in a blank tile.
+
+When Looker exports a dashboard, it uses a headless browser and relies entirely on the `done()` callback to know when it is safe to take a screenshot. 
+
+To ensure your charts export perfectly, you must tie the `done()` callback to your library's native completion event, and disable animations during exports using the `details.print` flag.
+
+Here is an example of how to handle asynchronous rendering using D3.js:
+
+```js
+  updateAsync: function(data, element, config, queryResponse, details, done) {
+    this.clearErrors();
+    
+    // Check if Looker is exporting the chart to a PDF/PNG
+    const isExport = details && details.print === true;
+
+    // Clear previous elements
+    this.svg.selectAll("*").remove();
+    
+    const circle = this.svg.append("circle")
+      .attr("cx", 50)
+      .attr("cy", 50);
+
+    if (isExport) {
+      // Instant render for exports. Draw the final state immediately with no transitions
+      circle.attr("r", 40);
+      
+      // Tell Looker to take the screenshot right now
+      done(); 
+    } else {
+      // If it's for the browser, start small and animate
+      circle.attr("r", 0)
+        .transition()
+        .duration(1000)
+        .attr("r", 40)
+        .on("end", () => {
+           // Tell Looker the animation is fully complete
+           done(); 
+        });
+    }
+  }
+  ```
+
+  If you are using React, ensure you pass the done callback as the third argument to your render function so Looker waits for React to mount the components:
+  ``` js
+    this.chart = ReactDOM.render(
+      <MyCustomChart data={data} />,
+      element,
+      done // Looker waits for React to finish
+    );
+  ```
 
 ### Configuration
 
